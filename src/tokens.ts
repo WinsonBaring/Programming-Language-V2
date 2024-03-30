@@ -1,0 +1,48 @@
+
+export enum TokenType {
+    BEGIN = 'BEGIN',
+    END = 'END',
+    CODE = 'CODE',
+    INT = 'INT',
+    CHAR = 'CHAR',
+    BOOL = 'BOOL',
+    FLOAT = 'FLOAT',
+    DISPLAY = 'DISPLAY',
+    COMMENT = 'COMMENT',
+    COMMA = 'COMMA',
+    LINEBREAK = 'LINEBREAK',
+    ASSIGNMENT = 'ASSIGNMENT',
+    DATA_TYPE = 'DATA_TYPE',
+    VARIABLE = 'VARIABLE',
+    VALUE = 'VALUE',
+    ARITHMETICOPERATOR = 'OPERATOR',
+    LOGICAL_OPERATOR = 'LOGICAL_OPERATOR',
+    UNARY_OPERATOR = 'UNARY_OPERATOR',
+    IF = 'IF',
+    ELSE = 'ELSE',
+    WHILE = 'WHILE',
+    SCAN = 'SCAN',
+    PAREN_OPEN = 'PAREN_OPEN',
+    PAREN_CLOSE = 'PAREN_CLOSE',
+    MULTIPLICATION = 'MULTIPLICATION',
+    DIVISION = 'DIVISION',
+    MODULO = 'MODULO',
+    ADDITION = 'ADDITION',
+    SUBTRACTION = 'SUBTRACTION',
+    GREATER_THAN = 'GREATER_THAN',
+    LESSER_THAN = 'LESSER_THAN',
+    GREATER_THAN_OR_EQUAL_TO = 'GREATER_THAN_OR_EQUAL_TO',
+    LESSER_THAN_OR_EQUAL_TO = 'LESSER_THAN_OR_EQUAL_TO',
+    EQUAL = 'EQUAL',
+    NOT_EQUAL = 'NOT_EQUAL',
+    AND = 'AND',
+    OR = 'OR',
+    NOT = 'NOT',
+    POSITIVE = 'POSITIVE',
+    NEGATIVE = 'NEGATIVE' 
+}
+
+export class Token{
+    constructor(public tokenType:TokenType, public value:string){
+    }
+}

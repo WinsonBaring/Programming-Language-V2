@@ -1,13 +1,63 @@
-export function isBool(text: string) {
-    var currentIndex: number = 0;
-    var bool: string = `BOOL`;
-    while (currentIndex < text.length && currentIndex < bool.length) {
-        if (text[currentIndex] !== bool[currentIndex]) {
-            return false;
+export function isBoolean(index: number, text: string): [boolean, number, string] {
+    let currentIndex: number = 0;
+    let bool: string = '';
+    // Guard against starting in "
+    if (text[index] !== `"`) return [false, 0, ''];
+
+    // Check if it starts with "TRUE" or "FALSE"
+    bool = (text[index + 1] === 'T') ? 'TRUE' : 'FALSE';
+
+    // For checking FALSE or TRUE
+    while (index < text.length && currentIndex < bool.length) {
+        if (text[index+1] !== bool[currentIndex]) {
+            // throw new Error("Invalid Token: ")
+            return [false, 0, ''];
         }
+        index++;
         currentIndex++;
     }
-    return currentIndex === bool.length; // Ensure all characters in 'bool' were checked
+
+    // Guard against not ending in `"`
+    if (text[index+1] !== `"`) return [false, 0, ''];
+
+    // + 2 because of `""` during Guarding
+    return [true, currentIndex+2, bool];
+}
+export function isComment(index:number, text:string):[boolean, number ]{
+    let currentIndex = 0;
+
+    if(text[index] !== `#` ) return [false,currentIndex]
+
+    while(text[index] !== `\n`){
+        currentIndex++;
+        index++;
+    }
+    return [true, currentIndex]
+}
+export function isDisplay(index:number, text:string):[boolean,number]{
+    let display:string = `DISPLAY`;
+    let currentIndex:number = 0;
+    while(index < text.length && currentIndex < display.length){
+        if(display[currentIndex] !== text[index]) return [false,0]
+        index++;
+        currentIndex++;
+    }
+    return [true, currentIndex]
+}
+export function isBool(index: number, text:string):[boolean,number] {
+    var currentIndex: number = 0;
+    var beginCode: string = `BOOL`;
+
+    // for checking BEGIN
+    while (index < text.length && currentIndex < beginCode.length) {
+        // console.log(`index`, beginCode[currentIndex],`, currentIndex`,text[index])
+        if (text[index] !== beginCode[currentIndex]) {
+            return[false,0]
+        }
+        index++;
+        currentIndex++;
+    }
+    return [true,currentIndex];
 }
 
 export function isINT(text: string) {
@@ -21,6 +71,7 @@ export function isINT(text: string) {
     }
     return currentIndex === INT.length; // Ensure all characters in 'bool' were checked
 }
+
 export function isIF(text: string) {
     var currentIndex: number = 0;
     var IF: string = `IF`;
@@ -34,57 +85,60 @@ export function isIF(text: string) {
 }
 
 export function isBeginCode(index: number, text: string):[boolean, number] {
-    var indexCounter: number = 0;
     var currentIndex: number = 0;
     var beginCode: string = `BEGIN`;
-    var code: string = `CODE`;
-
-    // for checking BEGIN
     while (index < text.length && currentIndex < beginCode.length) {
         // console.log(`index`, beginCode[currentIndex],`, currentIndex`,text[index])
         if (text[index] !== beginCode[currentIndex]) {
-            throw new Error("Program Should start with BEGIN");
+            return [false,0]
         }
         index++;
-        indexCounter++;
         currentIndex++;
     }
-    currentIndex = 0;
-
-    // for checking all white spaces and line breaks
-    while (index < text.length) {
-        if (text[index] === ` ` || text[index] === `\n` || text[index] === `\r\n`) {
-            index++;
-            indexCounter++;
-        } else {
-            break;
-        }
-    }
-
-    // for checking CODE
-    currentIndex = 0;
+    return [true,currentIndex];
+}
+export function isCode(index: number, text: string):[boolean, number] {
+    var currentIndex: number = 0;
+    var code: string = `CODE`;
     while (index < text.length && currentIndex < code.length) {
         if (text[index] !== code[currentIndex]) {
-            throw new Error("the word: CODE after begin is missing");
+            return [false,0]
         }
         index++;
-        indexCounter++;
         currentIndex++;
     }
-    return [true,indexCounter];
+    return [true,currentIndex];
 }
 
 export function isDelimiter(char: string): boolean {
     return char === ' ' || char === '=' || char === `\n`;
 }
-export function isNumber(currentIndex: number, input: string): [boolean, number] {
-    var currentCounter: number = 0;
-    //Checker for non-numeric characters
-    if(/^\d+$/.test(input[currentIndex]) ) return [false,0]
+export function isNumberAddedIndex(currentIndex: number, input: string): [number, number] {
+    let indexCounter: number = 0;
+    let numberHolder: number[] = [];
 
-    while (/^\d+$/.test(input[currentIndex]) && currentCounter < input.length) {
-        currentCounter++;
-        currentIndex++; // Update the currentIndex to avoid infinite loop
+    // while consecutive numbers
+    while (currentIndex < input.length && /^\d+$/.test(input[currentIndex])) {
+        console.log("this is the current index: " + currentIndex)
+        numberHolder.push(parseInt(input[currentIndex]));
+        indexCounter++;
+        currentIndex++;
     }
-    return [true, currentCounter];
+
+    // Convert the array into a single number
+    let numberValue: number = parseInt(numberHolder.join(''));
+    return [indexCounter, numberValue];
+}   
+export function isNumber(input:string): boolean {
+    // return true if number
+    return /^\d+$/.test(input) ? true: false;
+}
+export function isArithmeticOperator(input: string): boolean {
+    return input === '+' || input === '-' || input === '*' || input === '%';
+}
+export function isLogicationOperator(input:string):boolean{
+    return input === `AND` || input === `OR` || input === `NOT`;
+}
+export function isUnaryOperator(input:string):boolean{
+    return input === `+` || input === `-` ;
 }

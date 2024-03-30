@@ -1,6 +1,8 @@
-import { isBeginCode, isBool, isDelimiter, isINT, isNumber } from "./helper.js";
+import { Token, TokenType } from "../tokens.js";
+import { isBeginCode, isCode, isBool, isArithmeticOperator, isBoolean, isDelimiter, isINT, isNumber, isNumberAddedIndex, isLogicationOperator, isUnaryOperator, isComment, isDisplay } from "./helper.js";
 export class Tokenizer {
     token = [];
+    // token: { tokenType:string,value:string}[] = [];
     input = '';
     currentIndex = 1;
     previousIndex = 0;
@@ -8,7 +10,7 @@ export class Tokenizer {
     constructor() {
     }
     addToken(tokenType, currentToken) {
-        this.token.push({ tokenType: tokenType, value: currentToken });
+        this.token.push(new Token(tokenType, currentToken));
     }
     tokenize(input) {
         this.input = input;
@@ -19,62 +21,139 @@ export class Tokenizer {
             // console.log(`this:`,currentToken,`:this`)
             // console.log(":"+currentToken+":")
             if (currentToken === ` `) {
-                console.log("blank");
+                console.log("space");
                 this.previousIndex++;
                 this.currentIndex++;
                 continue;
             }
             else if (currentToken === '') {
-                console.log("whitespace:" + this.input[this.currentIndex], `, current Token:`, currentToken);
+                console.log("whitespace");
+                // console.log("whitespace:"+this.input[this.currentIndex],`, current Token:`, currentToken)
                 this.currentIndex++;
                 continue;
             }
             else if (currentToken === `\n`) {
                 console.log("linebreak");
-                this.addToken("LINEBREAK", currentToken);
+                this.addToken(TokenType.LINEBREAK, currentToken);
                 this.previousIndex++;
                 continue;
             }
-            else if (currentToken === `B`) {
-                console.log("B winson");
-                // BEING
-                if (isBeginCode(this.previousIndex, this.input)[0]) {
-                    this.addToken("BEGIN CODE", "BEGIN");
-                    this.previousIndex += isBeginCode(this.previousIndex, this.input)[1];
-                    this.currentIndex = this.previousIndex;
-                }
-                if (isBool(this.input)) {
-                }
+            else if (currentToken === `,`) {
+                console.log("comma");
+                this.addToken(TokenType.COMMA, ",");
+                this.previousIndex = this.currentIndex;
+                this.currentIndex = this.previousIndex + 1;
+                continue;
+            }
+            else if (currentToken === `(`) {
+                this.addToken(TokenType.PAREN_OPEN, currentToken);
+                this.previousIndex = this.currentIndex;
+                this.currentIndex = this.previousIndex + 1;
+                continue;
+            }
+            else if (currentToken === `)`) {
+                this.addToken(TokenType.PAREN_CLOSE, currentToken);
+                this.previousIndex = this.currentIndex;
+                this.currentIndex = this.previousIndex + 1;
+                continue;
+            }
+            else if (isLogicationOperator(currentToken)) {
+                this.addToken(TokenType.LOGICAL_OPERATOR, currentToken);
+                this.previousIndex = this.currentIndex;
+                this.currentIndex = this.previousIndex + 1;
+                continue;
+            }
+            else if (isArithmeticOperator(currentToken)) {
+                this.addToken(TokenType.ARITHMETICOPERATOR, currentToken);
+                this.previousIndex = this.currentIndex;
+                this.currentIndex = this.previousIndex + 1;
+                continue;
+            }
+            else if (isUnaryOperator(currentToken)) {
+                this.addToken(TokenType.UNARY_OPERATOR, currentToken);
+                this.previousIndex = this.currentIndex;
+                this.currentIndex = this.previousIndex + 1;
+                continue;
+            }
+            else if (isBeginCode(this.previousIndex, this.input)[0]) {
+                console.log("begin");
+                this.addToken(TokenType.BEGIN, "BEGIN");
+                this.previousIndex += isBeginCode(this.previousIndex, this.input)[1];
+                this.currentIndex = this.previousIndex;
+                continue;
+            }
+            else if (isCode(this.previousIndex, this.input)[0]) {
+                console.log("code");
+                this.addToken(TokenType.CODE, "CODE");
+                this.previousIndex += isCode(this.previousIndex, this.input)[1];
+                this.currentIndex = this.previousIndex;
+                continue;
+            }
+            else if (isBool(this.previousIndex, this.input)[0]) {
+                this.addToken(TokenType.DATA_TYPE, "BOOL");
+                this.previousIndex += isBool(this.previousIndex, this.input)[1];
+                this.currentIndex = this.previousIndex + 1;
+                continue;
             }
             else if (isINT(this.input.substring(this.previousIndex, this.previousIndex + 3))) {
                 console.log("integer");
-                this.addToken("INT", this.input.substring(this.previousIndex, this.previousIndex + 3));
+                this.addToken(TokenType.DATA_TYPE, this.input.substring(this.previousIndex, this.previousIndex + 3));
                 this.previousIndex += 3;
                 this.currentIndex = this.previousIndex;
                 continue;
             }
-            else if (isNumber(this.previousIndex, this.input)[0]) {
-                this.previousIndex = isNumber(this.previousIndex, this.input)[1];
+            else if (isNumber(currentToken)) {
+                console.log("int");
+                let fetchNumber = isNumberAddedIndex(this.previousIndex, this.input);
+                this.previousIndex = this.previousIndex + fetchNumber[0];
+                this.currentIndex = this.previousIndex + 1;
+                this.addToken(TokenType.INT, fetchNumber[1].toString());
+                continue;
+            }
+            else if (isComment(this.previousIndex, this.input)[0]) {
+                let fetchComment = isComment(this.previousIndex, this.input);
+                const currentComment = this.input.substring(this.previousIndex, this.previousIndex + fetchComment[1]);
+                this.addToken(TokenType.COMMENT, currentComment);
+                this.previousIndex += fetchComment[1];
+                this.currentIndex = this.previousIndex + 1;
+                continue;
+            }
+            else if (isDisplay(this.previousIndex, this.input)[0]) {
+                let fetchDisplay = isDisplay(this.previousIndex, this.input);
+                const currentDisplay = this.input.substring(this.previousIndex, this.previousIndex + fetchDisplay[1]);
+                this.addToken(TokenType.DISPLAY, currentDisplay);
+                this.previousIndex += fetchDisplay[1];
+                this.currentIndex = this.previousIndex + 1;
+                continue;
+            }
+            else if (isBoolean(this.previousIndex, this.input)[0]) {
+                console.log("boolean");
+                let booltype = isBoolean(this.previousIndex, this.input);
+                this.addToken(TokenType.BOOL, booltype[2]);
+                this.previousIndex += booltype[1];
                 this.currentIndex = this.previousIndex + 1;
                 continue;
             }
             else if (currentToken === `=`) {
                 console.log("assignment");
-                this.addToken("AssignmentOperator", currentToken);
+                this.addToken(TokenType.ASSIGNMENT, currentToken);
                 this.previousIndex += 1;
                 this.currentIndex = this.previousIndex + 1;
                 continue;
             }
             else {
                 // Find the end of the current identifier
-                while (this.currentIndex < this.inputLength && !isDelimiter(this.input[this.currentIndex])) {
+                while (this.currentIndex < this.inputLength && !isDelimiter(this.input[this.currentIndex]) && this.input[this.currentIndex] !== `,`) {
                     this.currentIndex++;
                 }
+                console.log("identifier");
                 // Extract the identifier
-                const currentIdentifier = this.input.substring(this.previousIndex, this.currentIndex);
-                this.addToken("IDENTIFIER", currentIdentifier);
+                const currentVariable = this.input.substring(this.previousIndex, this.currentIndex);
+                this.addToken(TokenType.VARIABLE, currentVariable);
                 this.previousIndex = this.currentIndex;
+                continue;
             }
+            console.log("added index - not identified - value:" + currentToken + ":++");
             this.currentIndex += 1;
         }
         return this.token;
