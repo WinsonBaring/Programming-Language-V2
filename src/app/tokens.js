@@ -22,6 +22,8 @@ export var TokenType;
     TokenType["ELSE"] = "ELSE";
     TokenType["WHILE"] = "WHILE";
     TokenType["SCAN"] = "SCAN";
+    TokenType["BRACKET_OPEN"] = "BRACKET_OPEN";
+    TokenType["BRACKET_CLOSE"] = "BRACKET_CLOSE";
     TokenType["PAREN_OPEN"] = "PAREN_OPEN";
     TokenType["PAREN_CLOSE"] = "PAREN_CLOSE";
     TokenType["MULTIPLICATION"] = "MULTIPLICATION";
@@ -40,6 +42,8 @@ export var TokenType;
     TokenType["NOT"] = "NOT";
     TokenType["POSITIVE"] = "POSITIVE";
     TokenType["NEGATIVE"] = "NEGATIVE";
+    TokenType["CONCATANATOR"] = "CONCATANATOR";
+    TokenType["RETURN_CARRIAGE"] = "RETURN";
 })(TokenType || (TokenType = {}));
 export class Token {
     tokenType;

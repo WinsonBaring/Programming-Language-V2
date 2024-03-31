@@ -24,18 +24,55 @@ export function isBoolean(index, text) {
 export function isComment(index, text) {
     let currentIndex = 0;
     if (text[index] !== `#`)
-        return [false, currentIndex];
+        return [false, 0];
+    let reverseIndex = 0;
+    // make the whole line comment
     while (text[index] !== `\n`) {
         currentIndex++;
         index++;
     }
     return [true, currentIndex];
 }
-export function isDisplay(index, text) {
-    let display = `DISPLAY`;
+export function isChar(index, text) {
+    if (text[index] !== "'")
+        return [false, 0]; // Check if it starts with a single quote
+    index++;
     let currentIndex = 0;
+    console.log(`this is it:` + text[index]);
+    // Skip all characters until the end or a newline is encountered
+    while (index < text.length && text[index] !== "'" && text[index] !== "\n") {
+        if (text[index] === "\n") {
+            return [false, 0];
+        }
+        if (text[index] === "'" && currentIndex < 2) {
+            return [true, currentIndex];
+        }
+        index++;
+        currentIndex++;
+    }
+    return [false, 0];
+}
+export function isDisplay(index, text) {
+    let display = `DISPLAY:`;
+    let currentIndex = 0;
+    if (text[index] !== `D`)
+        return [false, 0];
     while (index < text.length && currentIndex < display.length) {
         if (display[currentIndex] !== text[index])
+            return [false, 0];
+        index++;
+        currentIndex++;
+    }
+    return [true, currentIndex];
+}
+export function isEnd(index, text) {
+    let end = `END`;
+    let currentIndex = 0;
+    // if first index not E return
+    if (text[index] !== `E`)
+        return [false, 0];
+    while (index < text.length && currentIndex < end.length) {
+        if (end[currentIndex] !== text[index])
             return [false, 0];
         index++;
         currentIndex++;

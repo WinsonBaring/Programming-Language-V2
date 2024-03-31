@@ -22,6 +22,8 @@ export enum TokenType {
     ELSE = 'ELSE',
     WHILE = 'WHILE',
     SCAN = 'SCAN',
+    BRACKET_OPEN = 'BRACKET_OPEN',
+    BRACKET_CLOSE = 'BRACKET_CLOSE',
     PAREN_OPEN = 'PAREN_OPEN',
     PAREN_CLOSE = 'PAREN_CLOSE',
     MULTIPLICATION = 'MULTIPLICATION',
@@ -39,7 +41,9 @@ export enum TokenType {
     OR = 'OR',
     NOT = 'NOT',
     POSITIVE = 'POSITIVE',
-    NEGATIVE = 'NEGATIVE' 
+    NEGATIVE = 'NEGATIVE', 
+    CONCATANATOR = 'CONCATANATOR',
+    RETURN_CARRIAGE = `RETURN`
 }
 
 export class Token{

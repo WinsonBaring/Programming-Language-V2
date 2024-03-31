@@ -26,19 +26,59 @@ export function isBoolean(index: number, text: string): [boolean, number, string
 export function isComment(index:number, text:string):[boolean, number ]{
     let currentIndex = 0;
 
-    if(text[index] !== `#` ) return [false,currentIndex]
+    if(text[index] !== `#` ) return [false,0]
+    let reverseIndex = 0;
 
+    // make the whole line comment
     while(text[index] !== `\n`){
         currentIndex++;
         index++;
     }
     return [true, currentIndex]
 }
+export function isChar(index: number, text: string): [boolean, number] {
+    if (text[index] !== "'") return [false, 0];  // Check if it starts with a single quote
+    index++;
+    let currentIndex: number = 0;
+
+    console.log(`this is it:`+text[index])
+    // Skip all characters until the end or a newline is encountered
+    while (index < text.length && text[index] !== "'" && text[index] !== "\n") {
+        if (text[index] === "\n") {
+            return [false, 0];
+        }
+        if (text[index] === "'" && currentIndex < 2) {
+            return [true, currentIndex];    
+        }
+        index++;
+        currentIndex++;
+    }
+    return [false, 0];
+}
+
+
 export function isDisplay(index:number, text:string):[boolean,number]{
-    let display:string = `DISPLAY`;
+    let display:string = `DISPLAY:`;
     let currentIndex:number = 0;
+
+    if(text[index] !== `D` ) return [false,0]
+
     while(index < text.length && currentIndex < display.length){
         if(display[currentIndex] !== text[index]) return [false,0]
+        index++;
+        currentIndex++;
+    }
+    return [true, currentIndex]
+}
+export function isEnd(index:number, text:string):[boolean,number]{
+    let end:string = `END`;
+    let currentIndex:number = 0;
+
+    // if first index not E return
+    if(text[index] !== `E`) return [false,0]
+
+    while(index < text.length && currentIndex < end.length){
+        if(end[currentIndex] !== text[index]) return [false,0]
         index++;
         currentIndex++;
     }
