@@ -1,7 +1,7 @@
 # set up
 
 # node_modules
-## npm install
+ npm install
 
 # run interpreter in terminal
-## npm run interpreter
+ npm run interpreter
