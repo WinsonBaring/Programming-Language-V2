@@ -49,12 +49,11 @@ var TokenType;
     TokenType["RETURN_CARRIAGE"] = "RETURN";
     TokenType["EOF"] = "EOF";
 })(TokenType || (exports.TokenType = TokenType = {}));
-class Token {
-    tokenType;
-    value;
-    constructor(tokenType, value) {
+var Token = /** @class */ (function () {
+    function Token(tokenType, value) {
         this.tokenType = tokenType;
         this.value = value;
     }
-}
+    return Token;
+}());
 exports.Token = Token;

@@ -1,19 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Tokenizer = void 0;
-const tokens_js_1 = require("../tokens.js");
-const helper_js_1 = require("./helper.js");
-class Tokenizer {
-    token = [];
-    input = "";
-    currentIndex = 0;
-    previousIndex = 0;
-    inputLength = 0;
-    constructor() { }
-    addToken(tokenType, currentToken) {
-        this.token.push(new tokens_js_1.Token(tokenType, currentToken));
+var tokens_js_1 = require("../tokens.js");
+var helper_js_1 = require("./helper.js");
+var Tokenizer = /** @class */ (function () {
+    function Tokenizer() {
+        this.token = [];
+        this.input = "";
+        this.currentIndex = 0;
+        this.previousIndex = 0;
+        this.inputLength = 0;
     }
-    tokenize(input) {
+    Tokenizer.prototype.addToken = function (tokenType, currentToken) {
+        this.token.push(new tokens_js_1.Token(tokenType, currentToken));
+    };
+    Tokenizer.prototype.tokenize = function (input) {
         this.input = input;
         this.inputLength = input.length;
         while (this.currentIndex < this.inputLength) {
@@ -117,23 +118,23 @@ class Tokenizer {
                 continue;
             }
             else if ((0, helper_js_1.isNumber)(currentToken)) {
-                let fetchNumber = (0, helper_js_1.isNumberAddedIndex)(this.previousIndex, this.input);
+                var fetchNumber = (0, helper_js_1.isNumberAddedIndex)(this.previousIndex, this.input);
                 this.previousIndex = this.previousIndex + fetchNumber[0];
                 this.currentIndex = this.previousIndex + 1;
                 this.addToken(tokens_js_1.TokenType.INT, fetchNumber[1].toString());
                 continue;
             }
             else if ((0, helper_js_1.isComment)(this.previousIndex, this.input)[0]) {
-                let fetchComment = (0, helper_js_1.isComment)(this.previousIndex, this.input);
-                const currentComment = this.input.substring(this.previousIndex, this.previousIndex + fetchComment[1]);
+                var fetchComment = (0, helper_js_1.isComment)(this.previousIndex, this.input);
+                var currentComment = this.input.substring(this.previousIndex, this.previousIndex + fetchComment[1]);
                 this.addToken(tokens_js_1.TokenType.COMMENT, currentComment);
                 this.previousIndex += fetchComment[1];
                 this.currentIndex = this.previousIndex + 1;
                 continue;
             }
             else if ((0, helper_js_1.isDisplay)(this.previousIndex, this.input)[0]) {
-                let fetchDisplay = (0, helper_js_1.isDisplay)(this.previousIndex, this.input);
-                const currentDisplay = this.input.substring(this.previousIndex, this.previousIndex + fetchDisplay[1]);
+                var fetchDisplay = (0, helper_js_1.isDisplay)(this.previousIndex, this.input);
+                var currentDisplay = this.input.substring(this.previousIndex, this.previousIndex + fetchDisplay[1]);
                 this.addToken(tokens_js_1.TokenType.DISPLAY, currentDisplay);
                 this.previousIndex += fetchDisplay[1];
                 this.currentIndex = this.previousIndex + 1;
@@ -152,7 +153,7 @@ class Tokenizer {
                 continue;
             }
             else if ((0, helper_js_1.isBoolean)(this.previousIndex, this.input)[0]) {
-                let booltype = (0, helper_js_1.isBoolean)(this.previousIndex, this.input);
+                var booltype = (0, helper_js_1.isBoolean)(this.previousIndex, this.input);
                 this.addToken(tokens_js_1.TokenType.BOOL, booltype[2]);
                 this.previousIndex += booltype[1];
                 this.currentIndex = this.previousIndex + 1;
@@ -172,7 +173,7 @@ class Tokenizer {
                     this.currentIndex++;
                 }
                 // Extract the identifier
-                const currentVariable = this.input.substring(this.previousIndex, this.currentIndex);
+                var currentVariable = this.input.substring(this.previousIndex, this.currentIndex);
                 this.addToken(tokens_js_1.TokenType.VARIABLE, currentVariable);
                 this.previousIndex = this.currentIndex;
                 continue;
@@ -180,6 +181,7 @@ class Tokenizer {
             this.currentIndex += 1;
         }
         return this.token;
-    }
-}
+    };
+    return Tokenizer;
+}());
 exports.Tokenizer = Tokenizer;

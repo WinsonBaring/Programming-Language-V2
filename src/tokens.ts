@@ -43,10 +43,12 @@ export enum TokenType {
     POSITIVE = 'POSITIVE',
     NEGATIVE = 'NEGATIVE', 
     CONCATANATOR = 'CONCATANATOR',
-    RETURN_CARRIAGE = `RETURN`
+    RETURN_CARRIAGE = `RETURN`,
+    EOF = 'EOF'
 }
 
 export class Token{
     constructor(public tokenType:TokenType, public value:string){
     }
+    
 }
