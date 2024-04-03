@@ -3,7 +3,8 @@
     "nodemon": "^2.0.15" 
   },
   "scripts": {
-    "interpreter": "nodemon --config nodemon_interpreter.json"
+    "interpreter": "nodemon --config nodemon_interpreter.json",
+    "parser": "nodemon --config nodemon_parser.json"
   },
-  "type": "module"
+  "type": "commonjs"
 }
